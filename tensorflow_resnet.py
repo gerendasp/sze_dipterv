@@ -9,7 +9,6 @@ from tensorflow.keras.applications import ResNet50
 
 
 ## Resize dataset
-
 #import cv2
 
 #WIDTH = 224
@@ -34,7 +33,6 @@ from tensorflow.keras.applications import ResNet50
 
 
 # Build network
-
 batch_size = 32
 epochs = 100
 data_augmentation = True
@@ -45,31 +43,27 @@ num_classes = 10
 x_train = preprocess_input(x_train)
 x_test = preprocess_input(x_test)
 
-print('x_train shape:', x_train.shape)
-print(x_train.shape[0], 'train samples')
-print(x_test.shape[0], 'test samples')
-print('y_train shape:', y_train.shape)
 
+# Preprocess data
+input_shape = x_train.shape[1:]
 y_train = tf.keras.utils.to_categorical(y_train, num_classes)
 y_test = tf.keras.utils.to_categorical(y_test, num_classes)
 
+
+# Create model
 model = ResNet50(include_top=True,
                  weights=None,
                  input_tensor=None,
                  input_shape=(32,32,3),
                  pooling='avg',
                  classes=10)
-
-
 model.compile(loss='categorical_crossentropy',
               optimizer='sgd',
               metrics=['accuracy'])
-
-
 model.summary()
 
-# Train model
 
+# Train model
 model.fit(x_train, y_train,
               batch_size=batch_size,
               epochs=epochs,
@@ -78,7 +72,6 @@ model.fit(x_train, y_train,
 
 
 # Evaluate model
-
 scores = model.evaluate(x_test, y_test, verbose=1)
 print('Test loss:', scores[0])
 print('Test accuracy:', scores[1])

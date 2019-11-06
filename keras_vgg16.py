@@ -12,7 +12,6 @@ os.environ["KERAS_BACKEND"] = "theano"
 
 
 ## Resize dataset
-
 #import cv2
 
 #WIDTH = 224
@@ -35,49 +34,38 @@ os.environ["KERAS_BACKEND"] = "theano"
 #
 #x_train_resized = np.reshape(x_train_resized,(len(x_train),WIDTH,HEIGHT,3))
 
-
-# Preprocess images
-x_train = preprocess_input(x_train)
-x_test = preprocess_input(x_test)
-
-
 # Build network
-
 batch_size = 32
 epochs = 100
 data_augmentation = True
 num_classes = 10
 
 
+# Preprocess images
+x_train = preprocess_input(x_train)
+x_test = preprocess_input(x_test)
+
+
+# Preprocess data
 input_shape = x_train.shape[1:]
-x_train = x_train.astype('float32') / 255
-x_test = x_test.astype('float32') / 255
-
-print('x_train shape:', x_train.shape)
-print(x_train.shape[0], 'train samples')
-print(x_test.shape[0], 'test samples')
-print('y_train shape:', y_train.shape)
-
 y_train = keras.utils.to_categorical(y_train, num_classes)
 y_test = keras.utils.to_categorical(y_test, num_classes)
 
+
+# Create model
 model = VGG16(
     weights=None, 
     include_top=True, 
     classes=10,
     input_shape=(32,32,3)
 )
-
-
 model.compile(loss='categorical_crossentropy',
               optimizer='sgd',
               metrics=['accuracy'])
-
-
 model.summary()
 
-# Train model
 
+# Train model
 model.fit(x_train, y_train,
               batch_size=batch_size,
               epochs=epochs,
@@ -86,7 +74,6 @@ model.fit(x_train, y_train,
 
 
 # Evaluate model
-
 scores = model.evaluate(x_test, y_test, verbose=1)
 print('Test loss:', scores[0])
 print('Test accuracy:', scores[1])
